@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>中断流控层</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>中断流控层</h1>
+<p>内核版本3.4.2</p>
+<p>中断流控层是内核通用中断子系统中的一层，中断流控制是指合理并正确处理连续发生的中断，比如一个中断在处理中，同一个中断再次到达时该如何处理，何时屏蔽该中断，何时打开中断，何时回应中断控制器等一系列操作。该层实现了与体系和硬件无关的中断流控处理操作，它针对不同的中断电器类型（电平触发、边沿触发……），实现了对应的标准中断流控处理函数。</p>
+<hr />
+<h2>1. 为什么需要中断流控层</h2>
+<p>因为各种中断请求的电气特性有所不同，或者硬件的中断控制器的特性有不同，这导致了以下的处理也会有所不同：
+- 何时对中断控制器发出ack回应；
+- mask irq和unmask irq的处理;
+- 中断控制器是否需要回应eoi(End Of Interrupt)；
+- 何时打开CPU的本地irq中断，以便允许irq的嵌套；
+- 中断数据结构的同步和保护。</p>
+<h2>2.中断流控层的实现</h2>
+<p><code>irq_desc</code>结构中的<code>handle_irq</code>成员就是中断流控层的函数，类型是：</p>
+<p><code>typedef	void (*irq_flow_handler_t)(unsigned int irq, struct irq_desc *desc);</code></p>
+<p>设置中断流控层的接口：</p>
+<p><code>irq_set_handler(unsigned int irq, irq_flow_handler_t handle);</code>
+<code>void irq_set_chip_and_handler(unsigned int irq, struct irq_chip *chip, irq_flow_handler_t handle);</code></p>
+<p>例如在2440的代码中使用以下代码设置中断流控层：</p>
+<pre>
+<code>
+void __init s3c24xx_init_irq(void)
+{
+	...
+	irq_set_chip_and_handler(irqno, &s3c_irq_level_chip, handle_level_irq);
+	...
+}
+</code>
+</pre>
+<p>中断流控层在整个中断过程中的位置（红色代码，流控层设置为<code>handle_level_irq</code>的前提）：</p>
+<pre>
+<code>
+asm_do_IRQ()
+	handle_IRQ()
+		irq_enter()
+		generic_handle_irq()
+			generic_handle_irq_desc()
+				<font color=red>desc->handle_irq(irq, desc);	//调用irq_desc结构中的handle_irq，handle_level_irq</font>
+					<font color=red>raw_spin_lock(&desc->lock);</font>
+					<font color=red>mask_ack_irq(desc);</font>
+					<font color=red>判断IRQ_INPROGRESS</font>
+					handle_irq_event(desc);	//这个函数开始时设置IRQ_INPROGRESS标志，结束时清除IRQ_INPROGRESS标志
+					<font color=red>unmask_irq(desc);</font>
+		irq_finish()
+		irq_exit()
+</code>
+</pre>
+<h2>3.通用中断子系统实现的标准流控回调函数</h2>
+<p>通用中断子系统实现了以下这些标准流控回调函数(kernel/irq/chip.c)：
+- <code>handle_simple_irq</code>  用于简易流控处理；
+- <code>handle_level_irq</code>  用于电平触发中断的流控处理；
+- <code>handle_edge_irq</code>  用于边沿触发中断的流控处理；
+- <code>handle_fasteoi_irq</code>  用于需要响应eoi的中断控制器；
+- <code>handle_edge_eoi_irq</code>  用于需要相应eoi的边沿触发的中断；
+- <code>handle_percpu_irq</code>  用于只在单一cpu响应的中断
+- <code>handle_nested_irq</code>  用于处理使用线程的嵌套中断；</p>
+<h2>4.<code>handle_level_irq</code></h2>
+<p>该函数处理电平中断的流控操作。
+电平中断的特点是，只要设备的中断请求引脚（中断线）保持在预设的触发电平，中断就会一直被请求。
+所以，为了避免同一个中断被重复响应，必须在处理中断前先把中断屏蔽（mask irq）， 然后回应中断（ack irq）以便复位设备的中断请求引脚，使得打开中断屏蔽后（unmask irq）不会再次触发同一个中断，当IRQ处理完成后再打开中断屏蔽（unmask irq）。屏蔽和回应中断后，还判断了<code>IRQ_INPROGRESS</code>标志，如果<code>IRQ_INPROGRESS</code>标志被设置，说明IRQ正在被处理（可能是在别的CPU上处理），此时当前CPU立即放弃处理这个IRQ。</p>
+<h2>5.<code>handle_edge_irq</code></h2>
+<p>该函数处理边沿触发中断的流控操作。
+边沿触发的特点是，只有设备的中断请求引脚（中断线）的电平发生跳变时（由低到高或者由高到低），才会发出中断请求，因为跳变是一瞬间，不像电平触发，电平是一直保持的，所以处理不当就特别容易漏掉一次中断请求。当第一个中断请求到来时，回应中断（ack irq）使得中断能够再次到来，然后进入<code>handle_irq_event()</code>处理中断，<code>IRQ_INPROGRESS</code>标志位被设置，如果中断正在处理中第二次中断来到，那么另一个CPU就设置<code>IRQS_PENDING</code>标志位表示中断挂起，然后屏蔽中断（mask irq）、回应中断（ack irq），最后退出中断执行程序。因为是mask、ack，所以只允许挂起一次中断。</p>
+<pre>
+<code>
+/*
+ * If we're currently running this IRQ, or its disabled,
+ * we shouldn't process the IRQ. Mark it pending, handle
+ * the necessary masking and go out
+ */
+if (unlikely(irqd_irq_disabled(&desc->irq_data) ||
+		    irqd_irq_inprogress(&desc->irq_data) || !desc->action)) {	//如果中断在处理中
+	if (!irq_check_poll(desc)) {
+		desc->istate |= IRQS_PENDING;		//挂起中断
+		mask_ack_irq(desc);					//mask、ack中断
+		goto out_unlock;
+	}
+}
+/* Start handling the irq */
+desc->irq_data.chip->irq_ack(&desc->irq_data);
+</code>
+</pre>
+<p>在第一个CPU处理中断期间，另一个请求可能由另一个CPU响应，从上面分析可知另一个CPU响应中断只是把中断挂起并退出，当第一个CPU处理完第一次中断后会接着处理被另一个CPU挂起的中断。内核在这里设置了循环来处理这种情况，直到<code>IRQS_PENDING</code>标志无效为止。而且因为另一个CPU在响应第二次中断的时候挂起irq并且mask irq，所以在循环中要unmask irq，以便第三次中断到来时另一个CPU可以响应并挂起irq。</p>
+<pre>
+<code>
+do {
+	if (unlikely(!desc->action)) {
+		mask_irq(desc);
+		goto out_unlock;
+	}
+
+	/*
+	 * When another irq arrived while we were handling
+	 * one, we could have masked the irq.
+	 * Renable it, if it was not disabled in meantime.
+	 */
+	if (unlikely(desc->istate & IRQS_PENDING)) {
+		if (!irqd_irq_disabled(&desc->irq_data) &&
+		    irqd_irq_masked(&desc->irq_data))
+			unmask_irq(desc);
+	}
+
+	handle_irq_event(desc);
+
+} while ((desc->istate & IRQS_PENDING) &&
+	 !irqd_irq_disabled(&desc->irq_data));
+</code>
+</pre>
+<p><code>IRQS_PENDING</code>标志会在<code>handle_irq_event()</code>中清除。</p>
+<h2>6.电平中断和边沿中断的比较</h2>
+<p>可以看出电平中断处理流程是为了避免对一次中断的多次响应，需要屏蔽中断；
+边沿中断处理流程是为了避免漏掉中断请求，第一次处理中不需要屏蔽中断。</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
