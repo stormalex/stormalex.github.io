@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>usb_driver</title>
+<title>usb</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
@@ -291,79 +291,12 @@ img {
 </style>
 </head>
 <body>
-<h1>Linux USB系统分析</h1>
-<p>USB系统中软件部分分为：</p>
+<h1>USB子系统</h1>
 <p><li><a href="/usb/usb_host_controller_driver.html">USB主机控制器驱动</a>
 <li><a href="/usb/usb_generic_driver.html">USB通用设备驱动</a>
 <li><a href="/usb/usb_driver.html">USB接口驱动</a>
 <li><a href="/usb/usb_root_hub_driver.html">root hub驱动</a></p>
-<p>USB硬件部分分为：
-<li>USB主机控制器（OHCI， EHCI， UHCI）
-<li>USB设备，包括一般的设备和usb hub
-<li>USB接口
-<li>root hub（之所以把根hub单独列出来是因为linux中有单独的根hub的驱动）</p>
-<p>这里分析<strong>USB接口驱动</strong>注册过程。</p>
-<h2>1.USB接口驱动初始化过程</h2>
-<p>上面分析了第一条线，也就是USB设备驱动的执行流程，假设已经有一个USB设备在了系统上。
-接下来分析USB接口驱动注册的过程，假设已经有一个可用的USB设备插入了系统</p>
-<p>USB设备驱动由一个 struct usb_driver 结构体代表</p>
-<pre>
-<code>
-struct usb_driver {
-    const char *name;
 
-    int (*probe) (struct usb_interface *intf,
-              const struct usb_device_id *id);
-
-    void (*disconnect) (struct usb_interface *intf);
-
-    int (*unlocked_ioctl) (struct usb_interface *intf, unsigned int code,
-            void *buf);
-
-    int (*suspend) (struct usb_interface *intf, pm_message_t message);
-    int (*resume) (struct usb_interface *intf);
-    int (*reset_resume)(struct usb_interface *intf);
-
-    int (*pre_reset)(struct usb_interface *intf);
-    int (*post_reset)(struct usb_interface *intf);
-
-    const struct usb_device_id *id_table;
-
-    struct usb_dynids dynids;
-    struct usbdrv_wrap drvwrap;
-    unsigned int no_dynamic_id:1;
-    unsigned int supports_autosuspend:1;
-    unsigned int soft_unbind:1;
-};
-</code>
-</pre>
-<pre>
-<code>
-usb_register_driver(struct usb_driver *new_driver, struct module *owner, const char *mod_name)
-    //首先设置驱动对象中的drvwrap，而再看设备驱动中也有drvwrap，这个就是用来区分设备驱动和接口驱动的，具体通过drvwrap.for_devices这个变量进行标识
-    new_driver->drvwrap.for_devices = 0;
-    new_driver->drvwrap.driver.name = (char *) new_driver->name;
-    new_driver->drvwrap.driver.bus = &usb_bus_type;             //接口驱动的bus
-    new_driver->drvwrap.driver.probe = usb_probe_interface;     //接口驱动的probe函数
-    new_driver->drvwrap.driver.remove = usb_unbind_interface;
-    driver_register(&new_driver->drvwrap.driver);       //注册到系统中
-        bus_add_driver(drv);        //添加到总线
-            driver_attach(drv);
-                bus_for_each_dev(drv->bus, NULL, drv, __driver_attach);
-                    __driver_attach(dev, drv)       //这里的drv代表了USB接口的驱动
-                        driver_match_device(drv, dev)
-                            drv->bus->match(dev, drv)   //这里执行usb_bus_type中的match函数
-                                usb_device_match(dev, drv)  //这里不分析了，过程和USB设备和通用设备匹配一样，只是现在传入的drv是一个USB接口驱动，需要匹配USB接口
-                        driver_probe_device(drv, dev);  //如果匹配到USB接口
-                            drv->probe(drv, dev)        //usb_bus_type里没有probe函数，所以执行注册的USB接口驱动的probe函数
-                                usb_probe_interface(dev)   //最终会调用到注册的USB接口驱动的probe函数
-								usb_match_id(intf, driver->id_table);   //这两个函数用来取得匹配的驱动的id
-                                usb_match_dynamic_id(intf, driver);
-                                	driver->probe(intf, id);    //将这个接口设备和接口驱动id传入接口驱动的probe函数，这里就进入了一个需要实现的驱动的probe函数中
-</code>
-</pre>
-<p>下图是注册USB通用驱动的大概过程：</p>
-<img src="/usb/src/USB_driver_register_proc.png"  alt="USB driver register proc" />
 </body>
 </html>
 <!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
