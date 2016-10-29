@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>linux_USB_analysis</title>
+<title>usb_generic_driver</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
@@ -291,9 +291,19 @@ img {
 </style>
 </head>
 <body>
-<h1>Linux USB系统初始化分析</h1>
-<p>USB系统中软件部分分为 USB主机控制器驱动 、 USB设备驱动 和 USB接口驱动，首先分析USB设备驱动。</p>
-<h2>1.USB设备驱动初始化过程</h2>
+<h1>Linux USB系统分析</h1>
+<p>USB系统中软件部分分为：</p>
+<p><li><a href="/usb/usb_host_controller_driver.html">USB主机控制器驱动</a>
+<li><a href="/usb/usb_generic_driver.html">USB通用设备驱动</a>
+<li><a href="/usb/usb_driver.html">USB接口驱动</a>
+<li><a href="/usb/usb_root_hub_driver.html">root hub驱动</a></p>
+<p>USB硬件部分分为：
+<li>USB主机控制器（OHCI， EHCI， UHCI）
+<li>USB设备，包括一般的设备和usb hub
+<li>USB接口
+<li>root hub（之所以把根hub单独列出来是因为linux中有单独的根hub的驱动）</p>
+<p>这里分析USB通用设备驱动注册过程。</p>
+<h2>1.USB通用设备驱动初始化过程</h2>
 <p>下面这个对象实际上是内核中所有USB设备的驱动（不包括roothub）。</p>
 <pre>
 <code>
@@ -399,20 +409,12 @@ usb_init(void)
                                                                                             driver->probe(intf, id);    //将这个接口设备和接口驱动id传入接口驱动的probe函数，这里就进入了一个需要实现的驱动的probe函数中
 </code>
 </pre>
-<p>上面的过程实际上是分析从USB初始化时候注册一个<code>usb_generic_driver</code>驱动的过程，但是相当繁琐，一堆驱动和设备，实际上，我们要先理解一组用语防止混淆：</p>
-<p><li>USB设备       代表了一个USB设备，例如一个USB鼠标，或是一个USB摄像头
-<li>USB接口       代表了一个USB设备中的一个功能接口，例如一个USB摄像头有两个接口，一个是摄像头接口，一个是麦克风接口
-<li>USB设备驱动   可以匹配上USB设备，实际上在内核中USB设备驱动只有一个，
-<li>USB接口驱动   可以匹配上USB接口的驱动程序，也就是我们通常需要开发的程序，使用接口<code>usb_register_driver()</code>注册</p>
-<p>实际上上边的过程第一部分对应于USB设备驱动和USB设备的匹配，第二部分设置好匹配上的USB设备然后为USB接口匹配USB接口驱动。
-实际上在整个USB各种设备和驱动匹配的过程有三条线：</p>
-<ol>
-<li>USB设备驱动注册的一条线     使用usb_register_device_driver()注册
-<li>USB接口驱动注册的一条线     使用usb_register_driver()注册
-<li>USB设备插入的一条线         
-</ol>
-<p>所以这里只是分析了第一条线，还有两条完了分析。</p>
-<p>第一条线的流程图如下：</p>
+<p>上面的过程实际上是分析从USB初始化时候注册一个<code>usb_generic_driver</code>驱动，到匹配到一个USB设备，再到为这个匹配到的设备匹配所有的接口驱动过程，最后调到了匹配到的接口驱动的probe函数，过程相当繁琐，一堆的驱动和设备，实际上，我们要先理解一组用语防止混淆：</p>
+<p><li>USB设备,代表了一个USB设备，例如一个USB鼠标，或是一个USB摄像头
+<li>USB接口,代表了一个USB设备中的一个功能接口，例如一个USB摄像头有两个接口，一个是摄像头接口，一个是麦克风接口
+<li>USB通用设备驱动,可以匹配上USB设备，在内核中USB通用设备驱动只有一个，就是<code>usb_generic_driver</code>
+<li>USB接口驱动,可以匹配上USB接口的驱动程序，也就是我们通常需要开发的程序，使用接口<code>usb_register_driver()</code>注册</p>
+<p>下图是注册USB通用驱动的大概过程：</p>
 <img src="/usb/src/USB_device_driver_register_proc.png"  alt="USB device driver register proc" />
 </body>
 </html>
