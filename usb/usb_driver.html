@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>usb_driver</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Linux USB系统分析</h1>
+<p>USB系统中软件部分分为：</p>
+<p><li><a href="/usb/usb_host_controller_driver.html">USB主机控制器驱动</a>
+<li><a href="/usb/usb_generic_driver.html">USB通用设备驱动</a>
+<li><a href="/usb/usb_driver.html">USB接口驱动</a>
+<li><a href="/usb/usb_root_hub_driver.html">root hub驱动</a></p>
+<p>USB硬件部分分为：
+<li>USB主机控制器（OHCI， EHCI， UHCI）
+<li>USB设备，包括一般的设备和usb hub
+<li>USB接口
+<li>root hub（之所以把根hub单独列出来是因为linux中有单独的根hub的驱动）</p>
+<p>这里分析<strong>USB接口驱动</strong>注册过程。</p>
+<h2>2.USB接口驱动初始化过程</h2>
+<p>上面分析了第一条线，也就是USB设备驱动的执行流程，假设已经有一个USB设备在了系统上。
+接下来分析USB接口驱动注册的过程，假设已经有一个可用的USB设备插入了系统</p>
+<p>USB设备驱动由一个 struct usb_driver 结构体代表</p>
+<pre>
+<code>
+struct usb_driver {
+    const char *name;
+
+    int (*probe) (struct usb_interface *intf,
+              const struct usb_device_id *id);
+
+    void (*disconnect) (struct usb_interface *intf);
+
+    int (*unlocked_ioctl) (struct usb_interface *intf, unsigned int code,
+            void *buf);
+
+    int (*suspend) (struct usb_interface *intf, pm_message_t message);
+    int (*resume) (struct usb_interface *intf);
+    int (*reset_resume)(struct usb_interface *intf);
+
+    int (*pre_reset)(struct usb_interface *intf);
+    int (*post_reset)(struct usb_interface *intf);
+
+    const struct usb_device_id *id_table;
+
+    struct usb_dynids dynids;
+    struct usbdrv_wrap drvwrap;
+    unsigned int no_dynamic_id:1;
+    unsigned int supports_autosuspend:1;
+    unsigned int soft_unbind:1;
+};
+</code>
+</pre>
+<pre>
+<code>
+usb_register_driver(struct usb_driver *new_driver, struct module *owner, const char *mod_name)
+    //首先设置驱动对象中的drvwrap，而再看设备驱动中也有drvwrap，这个就是用来区分设备驱动和接口驱动的，具体通过drvwrap.for_devices这个变量进行标识
+    new_driver->drvwrap.for_devices = 0;
+    new_driver->drvwrap.driver.name = (char *) new_driver->name;
+    new_driver->drvwrap.driver.bus = &usb_bus_type;             //接口驱动的bus
+    new_driver->drvwrap.driver.probe = usb_probe_interface;     //接口驱动的probe函数
+    new_driver->drvwrap.driver.remove = usb_unbind_interface;
+    driver_register(&new_driver->drvwrap.driver);       //注册到系统中
+        bus_add_driver(drv);        //添加到总线
+            driver_attach(drv);
+                bus_for_each_dev(drv->bus, NULL, drv, __driver_attach);
+                    __driver_attach(dev, drv)       //这里的drv代表了USB接口的驱动
+                        driver_match_device(drv, dev)
+                            drv->bus->match(dev, drv)   //这里执行usb_bus_type中的match函数
+                                usb_device_match(dev, drv)  //这里不分析了，过程和USB设备和通用设备匹配一样，只是现在传入的drv是一个USB接口驱动，需要匹配USB接口
+                        driver_probe_device(drv, dev);  //如果匹配到USB接口
+                            drv->probe(drv, dev)        //usb_bus_type里没有probe函数，所以执行注册的USB接口驱动的probe函数
+                                usb_probe_interface(dev)   //最终会调用到注册的USB接口驱动的probe函数
+								usb_match_id(intf, driver->id_table);   //这两个函数用来取得匹配的驱动的id
+                                usb_match_dynamic_id(intf, driver);
+                                	driver->probe(intf, id);    //将这个接口设备和接口驱动id传入接口驱动的probe函数，这里就进入了一个需要实现的驱动的probe函数中
+</code>
+</pre>
+<p>下图是注册USB通用驱动的大概过程：</p>
+<img src="/usb/src/USB_driver_register_proc.png"  alt="USB driver register proc" />
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
