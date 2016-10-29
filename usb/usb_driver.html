@@ -303,7 +303,7 @@ img {
 <li>USB接口
 <li>root hub（之所以把根hub单独列出来是因为linux中有单独的根hub的驱动）</p>
 <p>这里分析<strong>USB接口驱动</strong>注册过程。</p>
-<h2>1.USB接口驱动初始化过程</h2>
+<h2><strong>USB接口驱动初始化过程</strong></h2>
 <p>上面分析了第一条线，也就是USB设备驱动的执行流程，假设已经有一个USB设备在了系统上。
 接下来分析USB接口驱动注册的过程，假设已经有一个可用的USB设备插入了系统</p>
 <p>USB设备驱动由一个 struct usb_driver 结构体代表</p>
