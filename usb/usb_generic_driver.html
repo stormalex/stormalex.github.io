@@ -302,9 +302,9 @@ img {
 <li>USB设备，包括一般的设备和usb hub
 <li>USB接口
 <li>root hub（之所以把根hub单独列出来是因为linux中有单独的根hub的驱动）</p>
-<p>这里分析USB通用设备驱动注册过程。</p>
+<p>这里分析<strong>USB通用设备驱动</strong>注册过程。</p>
 <h2>1.USB通用设备驱动初始化过程</h2>
-<p>下面这个对象实际上是内核中所有USB设备的驱动（不包括roothub）。</p>
+<p>下面这个对象实际上是内核中所有USB设备的驱动（不包括roothub），这里成为USB通用设备驱动。</p>
 <pre>
 <code>
 struct usb_device_driver usb_generic_driver = {
@@ -322,10 +322,10 @@ struct usb_device_driver usb_generic_driver = {
 <pre>
 <code>
 usb_init(void)
-第一部分，USB设备驱动匹配USB设备：
+第一部分，USB通用设备驱动匹配USB设备：
     usb_register_device_driver(&usb_generic_driver, THIS_MODULE);
         //这里对usb_generic_driver中的成员drvwrap进行设置
-        new_udriver->drvwrap.for_devices = 1;           //标示这个设备是USB设备驱动，不是接口驱动
+        new_udriver->drvwrap.for_devices = 1;           //标示这个驱动是USB通用设备驱动，不是接口驱动
         new_udriver->drvwrap.driver.name = (char *) new_udriver->name;
         new_udriver->drvwrap.driver.bus = &usb_bus_type;
         new_udriver->drvwrap.driver.probe = usb_probe_device;
@@ -342,13 +342,13 @@ usb_init(void)
                                 drv->bus->match ? drv->bus->match(dev, drv) : 1;    //判断drv指向的bus，也就是usb_bus_type中是否有match函数，如果有的话就调用，第一个参数是设备，第二个参数是驱动，也就是usb_generic_driver中的drvwrap.driver，usb_bus_type中是有match函数的，所以调用usb_bus_type.match函数
                                     usb_device_match(struct device *dev, struct device_driver *drv)     //调用usb_bus_type.match函数
                                         //在这里判断了dev的类型，有两种类型，一种是USB设备，一种是USB接口，在这里USB设备就是实际插入系统的USB设备，它有唯一的设备ID。而USB接口则是USB设备中的一个接口，例如一个USB声卡可以有一个播放的接口和一个录音的接口
-                                        //在这里匹配设备和驱动，USB设备驱动只能和USB设备匹配，而USB接口驱动只能和USB接口驱动匹配
+                                        //在这里匹配设备和驱动，USB通用设备驱动只能和USB设备匹配，而USB接口驱动只能和USB接口驱动匹配
                                         if (is_usb_device(dev)) {           //这里判断是不是USB设备，用dev中的type成员判断，dev->type == &usb_device_type;
                                             /* interface drivers never match devices */ //从注释看出接口驱动不能和
-                                            if (!is_usb_device_driver(drv))     //如果是接口驱动则不匹配，在这里实际判断的是usb_generic_driver.new_udriver.drvwrap.for_devices是否等于1，在这里我们传下来的是设备驱动(也就是全局变量usb_generic_driver)，所以如果这个设备是USB设备，则可以和传下来的驱动匹配
+                                            if (!is_usb_device_driver(drv))     //如果是接口驱动则不匹配，在这里实际判断的是usb_generic_driver.new_udriver.drvwrap.for_devices是否等于1，在这里我们传下来的是通用设备驱动(也就是全局变量usb_generic_driver)，所以如果这个设备是USB设备，则可以和传下来的驱动匹配
                                                 return 0;
                                                 
-                                            return 1;           //执行到这里USB的设备驱动就会和一个USB设备匹配
+                                            return 1;           //执行到这里USB的通用设备驱动就会和一个USB设备匹配
                                         }
                                         else if (is_usb_interface(dev)) {   //这里判断是不是USB接口，用dev中的type成员判断，dev->type == &usb_if_device_type;
                                             /* device drivers never match interfaces */
