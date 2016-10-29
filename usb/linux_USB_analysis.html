@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>linux_USB_analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Linux USB系统初始化分析</h1>
+<p>USB系统中软件部分分为 USB主机控制器驱动 、 USB设备驱动 和 USB接口驱动，首先分析USB设备驱动。</p>
+<h2>1.USB设备驱动初始化过程</h2>
+<p>下面这个对象实际上是内核中所有USB设备的驱动（不包括roothub）。</p>
+<pre>
+<code>
+struct usb_device_driver usb_generic_driver = {
+    .name = "usb",
+    .probe = generic_probe,
+    .disconnect = generic_disconnect,
+#ifdef  CONFIG_PM
+    .suspend = generic_suspend,
+    .resume = generic_resume,
+#endif
+    .supports_autosuspend = 1,
+};
+</code>
+</pre>
+<pre>
+<code>
+usb_init(void)
+第一部分，USB设备驱动匹配USB设备：
+    usb_register_device_driver(&usb_generic_driver, THIS_MODULE);
+        //这里对usb_generic_driver中的成员drvwrap进行设置
+        new_udriver->drvwrap.for_devices = 1;           //标示这个设备是USB设备驱动，不是接口驱动
+        new_udriver->drvwrap.driver.name = (char *) new_udriver->name;
+        new_udriver->drvwrap.driver.bus = &usb_bus_type;
+        new_udriver->drvwrap.driver.probe = usb_probe_device;
+        new_udriver->drvwrap.driver.remove = usb_unbind_device;
+        new_udriver->drvwrap.driver.owner = owner;
+        
+        driver_register(&new_udriver->drvwrap.driver);      //将`usb_generic_driver`结构中的`drvwrap.driver`注册到系统的驱动中
+            ->bus_add_driver(drv);              //这里的`drv`参数就是`usb_generic_driver.drvwrap.driver`, 类型是`struct device_driver`
+                bus = bus_get(drv->bus);        //取得注册的`driver`中的`bus`成员，在这里就是`usb_bus_type`
+                driver_attach(drv);
+                    bus_for_each_dev(drv->bus, NULL, drv, __driver_attach); //这个函数中遍历参数`bus`(也就是全局变量`usb_bus_type`)中的`p.klist_devices`链表上的设备，这个链表上的设备是已经插入到系统并且被USB系统识别的设备，这些设备被挂到`bus`的设备链表里
+                        __driver_attach(struct device *dev, void *data)； //上一步中遍历设备链表，并对每一个设备调用这个attach函数，调用这个函数时第一个参数是从链表中取得的设备结构体struct device的指针，代表了一个设备；第二个参数是上一步传入的drv(struct device_driver)，代表了这里的设备驱动，也就是全局的变量usb_generic_driver中的drvwrap.driver
+                            driver_match_device(drv, dev);
+                                drv->bus->match ? drv->bus->match(dev, drv) : 1;    //判断drv指向的bus，也就是usb_bus_type中是否有match函数，如果有的话就调用，第一个参数是设备，第二个参数是驱动，也就是usb_generic_driver中的drvwrap.driver，usb_bus_type中是有match函数的，所以调用usb_bus_type.match函数
+                                    usb_device_match(struct device *dev, struct device_driver *drv)     //调用usb_bus_type.match函数
+                                        //在这里判断了dev的类型，有两种类型，一种是USB设备，一种是USB接口，在这里USB设备就是实际插入系统的USB设备，它有唯一的设备ID。而USB接口则是USB设备中的一个接口，例如一个USB声卡可以有一个播放的接口和一个录音的接口
+                                        //在这里匹配设备和驱动，USB设备驱动只能和USB设备匹配，而USB接口驱动只能和USB接口驱动匹配
+                                        if (is_usb_device(dev)) {           //这里判断是不是USB设备，用dev中的type成员判断，dev->type == &usb_device_type;
+                                            /* interface drivers never match devices */ //从注释看出接口驱动不能和
+                                            if (!is_usb_device_driver(drv))     //如果是接口驱动则不匹配，在这里实际判断的是usb_generic_driver.new_udriver.drvwrap.for_devices是否等于1，在这里我们传下来的是设备驱动(也就是全局变量usb_generic_driver)，所以如果这个设备是USB设备，则可以和传下来的驱动匹配
+                                                return 0;
+                                                
+                                            return 1;           //执行到这里USB的设备驱动就会和一个USB设备匹配
+                                        }
+                                        else if (is_usb_interface(dev)) {   //这里判断是不是USB接口，用dev中的type成员判断，dev->type == &usb_if_device_type;
+                                            /* device drivers never match interfaces */
+                                            if (is_usb_device_driver(drv))      //这里判断驱动不是接口驱动返回0
+                                                return 0;
+                                                
+                                            intf = to_usb_interface(dev);       //如果是接口驱动，则从设备中取到接口
+                                            usb_drv = to_usb_driver(drv);       //这里的驱动只是linux内核模型中的驱动，还要取得USB接口驱动本身的那个驱动
+                                            id = usb_match_id(intf, usb_drv->id_table); //首先将接口和驱动中的id_table进行匹配，匹配上了返回1，具体匹配过程完了分析
+                                            if (id)
+                                                return 1;
+                                            
+                                            id = usb_match_dynamic_id(intf, usb_drv);   //如果和驱动的id_table里的ID匹配不上，再和驱动中的dynids里的链表匹配，这个链表哪里来的完了分析
+                                            if (id)
+                                                return 1;
+                                        }
+                                    
+                            if (dev->parent)    /* Needed for USB */        //注释表示这里是为了USB而进行检查，这个等到分析设备插入的过程时候再分析为什么要这么做
+                                device_lock(dev->parent);
+                            device_lock(dev);
+                            if (!dev->driver)
+                                driver_probe_device(drv, dev);      //执行到这里说明驱动和设备匹配上了
+                                    really_probe(dev, drv);
+                                        if (dev->bus->probe) {      //这里判断设备指向的总线上是否有probe函数，如果有则执行这个probe函数
+                                        }
+                                        else if (drv->probe) {      //这里判断驱动有没有probe函数，如果有则执行这个probe函数
+                                            ret = drv->probe(dev);  //如果这里的drv是usb_generic_driver.drvwrap.driver，则这里执行usb_probe_device()
+                                                usb_probe_device(dev)
+                                                    struct usb_device_driver *udriver = to_usb_device_driver(dev->driver);  //这里驱动和设备已经绑定，从设备中取得驱动，然后取得USB驱动本身，如果注册的是usb_generic_driver.drvwrap.driver驱动，则这里取得的USB的驱动是全局变量usb_generic_driver
+                                                    struct usb_device *udev = to_usb_device(dev);   //先通过dev取得USB设备本身
+                                                    udriver->probe(udev);       //如果注册的驱动是usb_generic_driver.drvwrap.driver，则这里调用usb_generic_driver中的probe函数，也就是generic_probe()
+第二部分：USB接口设备匹配USB接口驱动
+                                                        generic_probe(udev)     //这个函数会为这个USB设备选择一个合适的配置，并注册这个配置下的接口
+                                                            c = usb_choose_configuration(udev);     //选择一个配置，具体完了分析
+                                                            usb_set_configuration(udev, c);         //设置配置，过程具体完了分析
+                                                                ... //做一些接口的设置工作，在这里每个接口对象中都有一个struct device，这个结构是注册到内核中的，通过这个结构就可以找到每个接口了
+                                                                    //在这里对struct device进行了设置
+                                                                    intf->dev.parent = &dev->dev;       //这里将接口设备的parent指向了这个接口所在USB设备的dev
+                                                                    intf->dev.driver = NULL;
+                                                                    intf->dev.bus = &usb_bus_type;
+                                                                    intf->dev.type = &usb_if_device_type;
+                                                                    intf->dev.groups = usb_interface_groups;
+                                                                    intf->dev.dma_mask = dev->dev.dma_mask;
+                                                                
+                                                                //当所有接口设置好之后，对每个接口调用device_add()函数，从这里开始设备就代表一个接口
+                                                                device_add(&intf->dev)
+                                                                    bus_add_device(dev);    //这里的bus_add_device就对应上面注册驱动的bus_add_driver(drv)，一个用来向总线添加设备，一个用来向总线添加驱动，只是这里的总线是usb_bus_type，可以理解为一个虚拟总线，并不代表一个真实的物理设备
+                                                                                            //这个函数将设备添加到总线的p.klist_devices链表上
+                                                                    bus_probe_device(dev);  //探测总线
+                                                                        device_attach(dev)
+                                                                            bus_for_each_drv(dev->bus, NULL, dev, __device_attach); //对总线上的每个driver调用__device_attach，这也与之前的__driver_attach()对应
+                                                                                __device_attach()
+                                                                                    driver_match_device(drv, dev)       //到这里就和之前的步骤一样了，只是这里是去匹配一个接口的驱动
+                                                                                    driver_probe_device(drv, dev);      //然后在这里就可以执行到匹配上的接口驱动的probe函数了，而不执行usb_bus_type里的probe函数，因为usb_bus_type里没有probe函数
+                                                                                        usb_probe_interface(drv, dev)   //而这里drv里的probe函数就是usb_probe_interface()函数，详情见注册USB接口驱动的接口usb_register_driver()
+                                                                                            usb_match_id(intf, driver->id_table);   //这两个函数用来取得匹配的驱动的id
+                                                                                            usb_match_dynamic_id(intf, driver);
+                                                                                            driver->probe(intf, id);    //将这个接口设备和接口驱动id传入接口驱动的probe函数，这里就进入了一个需要实现的驱动的probe函数中
+</code>
+</pre>
+<p>上面的过程实际上是分析从USB初始化时候注册一个<code>usb_generic_driver</code>驱动的过程，但是相当繁琐，一堆驱动和设备，实际上，我们要先理解一组用语防止混淆：</p>
+<p><li>USB设备       代表了一个USB设备，例如一个USB鼠标，或是一个USB摄像头
+<li>USB接口       代表了一个USB设备中的一个功能接口，例如一个USB摄像头有两个接口，一个是摄像头接口，一个是麦克风接口
+<li>USB设备驱动   可以匹配上USB设备，实际上在内核中USB设备驱动只有一个，
+<li>USB接口驱动   可以匹配上USB接口的驱动程序，也就是我们通常需要开发的程序，使用接口<code>usb_register_driver()</code>注册</p>
+<p>实际上上边的过程第一部分对应于USB设备驱动和USB设备的匹配，第二部分设置好匹配上的USB设备然后为USB接口匹配USB接口驱动。
+实际上在整个USB各种设备和驱动匹配的过程有三条线：</p>
+<ol>
+<li>USB设备驱动注册的一条线     使用usb_register_device_driver()注册
+<li>USB接口驱动注册的一条线     使用usb_register_driver()注册
+<li>USB设备插入的一条线         
+</ol>
+<p>所以这里只是分析了第一条线，还有两条完了分析。</p>
+<p>第一条的</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
